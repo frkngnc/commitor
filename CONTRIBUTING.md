@@ -6,12 +6,12 @@ Thanks for considering a contribution to Commitor! This document explains how to
 
 1. Fork the repo and clone your copy:
    ```bash
-   git clone https://github.com/<username>/commitor.git
+   git clone https://github.com/frkngnc/commitor.git
    cd commitor
    ```
 2. Keep your fork in sync with upstream:
    ```bash
-   git remote add upstream https://github.com/frkngnc/commit.git
+   git remote add upstream https://github.com/frkngnc/commitor.git
    git fetch upstream
    git checkout develop
    git merge upstream/develop
