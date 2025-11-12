@@ -1,6 +1,6 @@
 {
   "name": "commitor",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "AI-powered Git commit message generator CLI",
   "type": "module",
   "main": "dist/index.js",

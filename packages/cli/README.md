@@ -29,7 +29,7 @@ commitor
 
 - 🎯 **AI-Powered**: Uses OpenAI (GPT-4o-mini) or Anthropic (Claude Sonnet 4.5)
 - 🔄 **Hybrid Mode**: API or Browser automation
-- 🌍 **Multi-Language**: Turkish and English support
+- 🌍 **Multi-Language**: Auto-detects language from README + git history, or specify any language
 - 📝 **Conventional Commits**: Follows industry standards
 - ✨ **Interactive**: Preview and edit before committing
 - 🔒 **Secure**: Encrypted API key storage
