@@ -146,10 +146,11 @@
     }
   },
   "scripts": {
-    "build": "tsc -p .",
-    "watch": "tsc -p . --watch",
-    "package": "vsce package",
-    "vscode:prepublish": "npm run build"
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "npm run build -- --production && vsce package",
+    "vscode:prepublish": "npm run build -- --production",
+    "compile": "tsc -p ."
   },
   "dependencies": {
     "@commitor/core": "*"
@@ -158,6 +159,7 @@
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.84.0",
     "@vscode/vsce": "^2.22.0",
+    "esbuild": "^0.21.5",
     "sharp": "^0.34.5",
     "typescript": "^5.2.0"
   }

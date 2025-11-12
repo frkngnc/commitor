@@ -1,37 +1,15 @@
-# VSCode packaging ignore list
-
-# Explicitly restrict packaging to this workspace folder
-../**
-../../**
-
 # Source files
-src/**
+src/
 tsconfig.json
-*.ts
-!dist/**/*.js
+esbuild.js
 
 # Build artifacts
-.vscode/**
-.vscode-test/**
-node_modules/**
+*.map
+*.ts
 
-# Development files
-scripts/**
-TEST_PLAN.md
-DEVELOPMENT.md
-.gitignore
-.eslintrc.json
-.prettierrc
-
-# Tests
-test/**
-*.test.ts
-
-# Dependencies and config
+# Dependencies (bundled)
+node_modules/
 package-lock.json
-turbo.json
 
 # Misc
 .DS_Store
-*.log
-*.vsix
