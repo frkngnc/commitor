@@ -1,15 +1,39 @@
-# Source files
-src/
+# Exclude parent directories - CRITICAL for monorepo
+../
+../../
+
+# Source code - bundled into dist/extension.js
+src/**
 tsconfig.json
 esbuild.js
+*.ts
+!dist/**/*.js
+
+# Development files
+.vscode/**
+.vscode-test/**
+.gitignore
+.eslintrc*
+.prettierrc*
+node_modules/**
+package-lock.json
+npm-debug.log*
+yarn.lock
 
 # Build artifacts
-*.map
-*.ts
+**/*.map
 
-# Dependencies (bundled)
-node_modules/
-package-lock.json
+# Tests
+test/**
+*.test.*
+*.spec.*
+coverage/**
+
+# Docs
+*.md
+!README.md
 
 # Misc
 .DS_Store
+*.vsix
+.github/**
