@@ -35,7 +35,7 @@ commitor
 - 🎯 **AI-Powered**: Uses OpenAI (ChatGPT) or Anthropic (Claude)
 - 🔄 **Hybrid Mode**: API or Browser automation (no API key required)
 - 🌍 **Multi-Language**: Auto-detects Turkish/English from README + history, or pick any language manually (custom input supported)
-- ✅ **API Key Validation**: Kurulum sihirbazı API anahtarını anında doğrular, hatada seni uyarır
+- ✅ **API Key Validation**: The setup wizard instantly validates the API key, and if there is an error,
 - 📝 **Conventional Commits**: Follows industry standards
 - ✨ **Interactive**: Preview and edit messages before committing
 - 🔒 **Secure**: Encrypted API key and session storage
@@ -95,13 +95,6 @@ Commitor is also available as a VSCode extension! Get AI-powered commit messages
 ### Installation
 
 Search for "Commitor" in the VSCode Extensions marketplace, or:
-
-```bash
-# Install from VSIX (during development)
-code --install-extension packages/vscode/commitor-vscode-0.1.0.vsix
-```
-
-See [VSCode Extension Documentation](./packages/vscode/README.md) for details.
 
 ## License
 
