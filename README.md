@@ -197,5 +197,5 @@ If you find Commitor useful, please consider:
 ---
 
 <div align="center">
-Made with by <a href="https://github.com/frkngnc">Furkan Genç</a>
+Made with by <a href="https://github.com/frkngnc">frkngnc</a>
 </div>
