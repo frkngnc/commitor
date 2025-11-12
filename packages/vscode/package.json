@@ -2,7 +2,7 @@
   "name": "commitor-vscode",
   "displayName": "Commitor",
   "description": "AI-powered Git commit message generator with OpenAI & Anthropic support",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "publisher": "frkngnc",
   "license": "MIT",
   "icon": "resources/icon.png",
@@ -51,6 +51,12 @@
   "activationEvents": [
     "onStartupFinished"
   ],
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "Commitor needs access to your repository history and staged changes, so it only runs in trusted workspaces."
+    }
+  },
   "contributes": {
     "commands": [
       {
@@ -225,6 +231,24 @@
           "type": "boolean",
           "default": true,
           "description": "Show Commitor status in the status bar"
+        },
+        "commitor.excludeGlobs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Glob patterns for files that should never be sent to the AI provider (e.g., \"**/*.env\", \"**/secrets/**\")"
+        },
+        "commitor.warnOnBinaryDiffs": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show a confirmation dialog when staged changes contain binary files before sending data to the AI provider"
+        },
+        "commitor.largeDiffWarningThreshold": {
+          "type": "number",
+          "default": 2000,
+          "description": "Show a confirmation dialog when the total number of changed lines exceeds this value (set to 0 to disable)"
         }
       }
     }
@@ -237,7 +261,8 @@
     "compile": "tsc -p ."
   },
   "dependencies": {
-    "@commitor/core": "^1.0.0"
+    "@commitor/core": "^1.0.0",
+    "minimatch": "^9.0.3"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
