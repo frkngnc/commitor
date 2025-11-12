@@ -17,7 +17,7 @@ export class AnthropicProvider implements AIProvider {
       apiKey: options.apiKey
     });
 
-    this.model = options.model || 'claude-3-5-sonnet-20241022';
+    this.model = options.model || 'claude-sonnet-4-5-20250929';
   }
 
   async generateMessage(options: GenerateMessageOptions): Promise<AIResponse> {
@@ -25,16 +25,25 @@ export class AnthropicProvider implements AIProvider {
       const systemPrompt = this.getSystemPrompt(options.language);
       const userPrompt = buildPrompt(options.diff, options.language);
 
-      const fullPrompt = `${Anthropic.HUMAN_PROMPT} ${systemPrompt}\n\n${userPrompt}${Anthropic.AI_PROMPT}`;
-
-      const completion: any = await this.client.completions.create({
+      const completion = await this.client.messages.create({
         model: this.model,
-        max_tokens_to_sample: options.maxTokens || 1024,
+        max_tokens: options.maxTokens || 1024,
         temperature: options.temperature || 0.7,
-        prompt: fullPrompt
+        system: systemPrompt,
+        messages: [
+          {
+            role: 'user',
+            content: userPrompt
+          }
+        ]
       });
 
-      const responseText = completion.completion || '';
+      const firstBlock = completion.content[0];
+      let responseText = '';
+
+      if (firstBlock && firstBlock.type === 'text') {
+        responseText = firstBlock.text;
+      }
 
       if (!responseText) {
         throw new Error('No response from Anthropic');
@@ -59,12 +68,17 @@ export class AnthropicProvider implements AIProvider {
 
   async healthCheck(): Promise<boolean> {
     try {
-      const completion: any = await this.client.completions.create({
+      const completion = await this.client.messages.create({
         model: this.model,
-        max_tokens_to_sample: 10,
-        prompt: `${Anthropic.HUMAN_PROMPT} Hello${Anthropic.AI_PROMPT}`
+        max_tokens: 10,
+        messages: [
+          {
+            role: 'user',
+            content: 'Hello'
+          }
+        ]
       });
-      if (!completion.completion) {
+      if (!completion.content || completion.content.length === 0) {
         throw new Error('Empty response from Anthropic');
       }
       return true;

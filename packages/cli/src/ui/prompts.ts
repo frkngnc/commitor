@@ -107,6 +107,7 @@ export class Prompts {
         type: 'password',
         name: 'apiKey',
         message: `Enter ${provider} API key:`,
+        mask: '*',
         validate: (input: string) => {
           if (!input || input.trim().length === 0) {
             return 'API key is required';

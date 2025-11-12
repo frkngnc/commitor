@@ -1,37 +1,39 @@
-# VSCode packaging ignore list
+# Exclude parent directories - CRITICAL for monorepo
+../
+../../
 
-# Explicitly restrict packaging to this workspace folder
-../**
-../../**
-
-# Source files
+# Source code - bundled into dist/extension.js
 src/**
 tsconfig.json
+esbuild.js
 *.ts
 !dist/**/*.js
 
-# Build artifacts
+# Development files
 .vscode/**
 .vscode-test/**
-node_modules/**
-
-# Development files
-scripts/**
-TEST_PLAN.md
-DEVELOPMENT.md
 .gitignore
-.eslintrc.json
-.prettierrc
+.eslintrc*
+.prettierrc*
+node_modules/**
+package-lock.json
+npm-debug.log*
+yarn.lock
+
+# Build artifacts
+**/*.map
 
 # Tests
 test/**
-*.test.ts
+*.test.*
+*.spec.*
+coverage/**
 
-# Dependencies and config
-package-lock.json
-turbo.json
+# Docs
+*.md
+!README.md
 
 # Misc
 .DS_Store
-*.log
 *.vsix
+.github/**
