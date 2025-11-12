@@ -24,19 +24,19 @@ export class SourceControlViewProvider implements vscode.TreeDataProvider<ViewIt
     const items: ViewItem[] = [];
 
     // Main action button
-    const generateItem = new ViewItem(
-      'Generate AI Commit Message',
-      'Generate commit message using AI',
-      vscode.TreeItemCollapsibleState.None,
-      {
-        command: 'commitor.generateCommitMessage',
-        title: 'Generate AI Commit Message'
-      },
-      'action',
-      new vscode.ThemeIcon('sparkle')
+    items.push(
+      new ViewItem(
+        '⚡ Generate AI Commit Message',
+        'Generate commit message using AI',
+        vscode.TreeItemCollapsibleState.None,
+        {
+          command: 'commitor.generateCommitMessage',
+          title: 'Generate AI Commit Message'
+        },
+        'action',
+        new vscode.ThemeIcon('sparkle')
+      )
     );
-    generateItem.description = 'Run Commitor';
-    items.push(generateItem);
 
     // Quick Settings
     const providerLabel = config.provider === 'openai' ? 'OpenAI' : 'Anthropic';
@@ -44,7 +44,7 @@ export class SourceControlViewProvider implements vscode.TreeDataProvider<ViewIt
 
     items.push(
       new ViewItem(
-        `🤖 Provider: ${providerLabel}`,
+        `Provider: ${providerLabel}`,
         'Click to change AI provider',
         vscode.TreeItemCollapsibleState.None,
         {
@@ -57,7 +57,7 @@ export class SourceControlViewProvider implements vscode.TreeDataProvider<ViewIt
 
     items.push(
       new ViewItem(
-        `🌍 Language: ${languageLabel}`,
+        `Language: ${languageLabel}`,
         'Click to change commit message language',
         vscode.TreeItemCollapsibleState.None,
         {
@@ -71,7 +71,7 @@ export class SourceControlViewProvider implements vscode.TreeDataProvider<ViewIt
     // Additional actions
     items.push(
       new ViewItem(
-        '⚙️ Open Configuration Panel',
+        'Open Configuration Panel',
         'Open full configuration settings',
         vscode.TreeItemCollapsibleState.None,
         {
