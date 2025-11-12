@@ -2,7 +2,7 @@
   "name": "commitor-vscode",
   "displayName": "Commitor",
   "description": "AI-powered Git commit message generator with OpenAI & Anthropic support",
-  "version": "0.1.2",
+  "version": "0.3.0",
   "publisher": "frkngnc",
   "license": "MIT",
   "icon": "resources/icon.png",
@@ -153,7 +153,7 @@
     "compile": "tsc -p ."
   },
   "dependencies": {
-    "@commitor/core": "*"
+    "@commitor/core": "^1.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

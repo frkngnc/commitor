@@ -1,12 +1,29 @@
 {
   "name": "commitor",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "AI-powered Git commit message generator CLI",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
     "commitor": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frkngnc/commitor.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://github.com/frkngnc/commitor#readme",
+  "bugs": {
+    "url": "https://github.com/frkngnc/commitor/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "build": "tsc",
@@ -19,14 +36,35 @@
     "commit",
     "cli",
     "ai",
+    "artificial-intelligence",
+    "commit-message",
+    "commit-message-generator",
+    "git-commit",
+    "git-cli",
     "openai",
+    "chatgpt",
+    "gpt-4o",
+    "gpt-5",
     "anthropic",
-    "conventional-commits"
+    "claude",
+    "conventional-commits",
+    "commitizen",
+    "git-automation",
+    "developer-tools",
+    "devtools",
+    "productivity",
+    "code-quality",
+    "best-practices",
+    "semantic-commit",
+    "commit-helper",
+    "ai-assistant",
+    "terminal",
+    "command-line"
   ],
   "author": "Furkan Genç",
   "license": "MIT",
   "dependencies": {
-    "@commitor/core": "*",
+    "@commitor/core": "^1.0.0",
     "commander": "^11.0.0",
     "inquirer": "^9.0.0",
     "chalk": "^5.3.0",

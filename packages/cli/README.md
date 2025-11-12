@@ -1,5 +1,9 @@
 # Commitor
 
+[![npm version](https://img.shields.io/npm/v/commitor?style=flat-square)](https://www.npmjs.com/package/commitor)
+[![npm downloads](https://img.shields.io/npm/dm/commitor?style=flat-square)](https://www.npmjs.com/package/commitor)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+
 🤖 AI-powered Git commit message generator
 
 ## Installation
@@ -23,7 +27,7 @@ commitor
 
 ## Features
 
-- 🎯 **AI-Powered**: Uses OpenAI (ChatGPT) or Anthropic (Claude)
+- 🎯 **AI-Powered**: Uses OpenAI (GPT-4o-mini) or Anthropic (Claude Sonnet 4.5)
 - 🔄 **Hybrid Mode**: API or Browser automation
 - 🌍 **Multi-Language**: Turkish and English support
 - 📝 **Conventional Commits**: Follows industry standards
@@ -56,6 +60,15 @@ Configuration is stored in `~/.commitor/config.json`
   "apiKey": "encrypted"
 }
 ```
+
+## Related Packages
+
+- [@commitor/core](https://www.npmjs.com/package/@commitor/core) - Core library
+- [commitor-vscode](https://marketplace.visualstudio.com/items?itemName=frkngnc.commitor-vscode) - VSCode extension
+
+## Repository
+
+[https://github.com/frkngnc/commitor](https://github.com/frkngnc/commitor)
 
 ## License
 

@@ -1,11 +1,27 @@
 {
   "name": "@commitor/core",
-  "version": "1.0.0",
-  "private": true,
+  "version": "1.2.0",
   "description": "Core library for AI-powered commit message generation",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frkngnc/commitor.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/frkngnc/commitor#readme",
+  "bugs": {
+    "url": "https://github.com/frkngnc/commitor/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -16,16 +32,36 @@
     "git",
     "commit",
     "ai",
+    "artificial-intelligence",
+    "library",
+    "sdk",
+    "api",
+    "commit-message",
+    "commit-message-generator",
+    "git-commit",
     "openai",
+    "chatgpt",
+    "gpt-4o",
+    "gpt-5",
     "anthropic",
-    "conventional-commits"
+    "claude",
+    "conventional-commits",
+    "git-automation",
+    "typescript",
+    "nodejs",
+    "developer-tools",
+    "code-quality",
+    "semantic-commit",
+    "ai-integration",
+    "git-tools",
+    "automation"
   ],
   "author": "Furkan Genç",
   "license": "MIT",
   "dependencies": {
     "simple-git": "^3.19.0",
-    "openai": "^4.0.0",
-    "@anthropic-ai/sdk": "^0.9.0",
+    "openai": "^6.8.1",
+    "@anthropic-ai/sdk": "^0.68.0",
     "playwright": "^1.40.0",
     "conf": "^11.0.2"
   },
