@@ -1,0 +1,164 @@
+{
+  "name": "commitor-vscode",
+  "displayName": "Commitor",
+  "description": "AI-powered Git commit message generator with OpenAI & Anthropic support",
+  "version": "0.1.0",
+  "publisher": "frkngnc",
+  "license": "MIT",
+  "icon": "resources/icon.png",
+  "main": "dist/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frkngnc/commit"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "ai",
+    "openai",
+    "anthropic",
+    "claude",
+    "chatgpt",
+    "conventional-commits"
+  ],
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "engines": {
+    "vscode": "^1.84.0"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "commitor.generateCommitMessage",
+        "title": "Generate AI Commit Message",
+        "category": "Commitor",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "commitor.configure",
+        "title": "Configure AI Provider (Quick)",
+        "category": "Commitor"
+      },
+      {
+        "command": "commitor.openConfigPanel",
+        "title": "Open Configuration Panel",
+        "category": "Commitor",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "commitor.changeLanguage",
+        "title": "Change Language",
+        "category": "Commitor"
+      },
+      {
+        "command": "commitor.logout",
+        "title": "Logout (Clear API Keys)",
+        "category": "Commitor"
+      },
+      {
+        "command": "commitor.checkHealth",
+        "title": "Check Provider Health",
+        "category": "Commitor"
+      }
+    ],
+    "menus": {
+      "scm/title": [
+        {
+          "command": "commitor.generateCommitMessage",
+          "group": "navigation",
+          "when": "scmProvider == git"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "commitor.generateCommitMessage",
+          "when": "scmProvider == git"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Commitor",
+      "properties": {
+        "commitor.provider": {
+          "type": "string",
+          "enum": [
+            "openai",
+            "anthropic"
+          ],
+          "default": "openai",
+          "description": "AI provider to use for commit message generation",
+          "enumDescriptions": [
+            "OpenAI (ChatGPT)",
+            "Anthropic (Claude)"
+          ]
+        },
+        "commitor.connectionType": {
+          "type": "string",
+          "enum": [
+            "api",
+            "browser"
+          ],
+          "default": "api",
+          "description": "Connection type for AI provider",
+          "enumDescriptions": [
+            "API Key (fast, reliable)",
+            "Browser automation (no API key needed)"
+          ]
+        },
+        "commitor.language": {
+          "type": "string",
+          "enum": [
+            "tr",
+            "en",
+            "auto",
+            "custom"
+          ],
+          "default": "auto",
+          "description": "Language for commit messages",
+          "enumDescriptions": [
+            "Turkish",
+            "English",
+            "Auto-detect from README and commit history",
+            "Custom language (specify below)"
+          ]
+        },
+        "commitor.customLanguage": {
+          "type": "string",
+          "default": "",
+          "description": "Custom language name (e.g., 'German', 'Spanish') when language is set to 'custom'"
+        },
+        "commitor.autoGenerate": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically generate commit message when staging changes"
+        },
+        "commitor.showStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show Commitor status in the status bar"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p .",
+    "watch": "tsc -p . --watch",
+    "package": "vsce package",
+    "vscode:prepublish": "npm run build"
+  },
+  "dependencies": {
+    "@commitor/core": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.84.0",
+    "@vscode/vsce": "^2.22.0",
+    "sharp": "^0.34.5",
+    "typescript": "^5.2.0"
+  }
+}

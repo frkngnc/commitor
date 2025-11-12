@@ -1,0 +1,40 @@
+{
+  "name": "@commitor/core",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Core library for AI-powered commit message generation",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "ai",
+    "openai",
+    "anthropic",
+    "conventional-commits"
+  ],
+  "author": "Furkan Genç",
+  "license": "MIT",
+  "dependencies": {
+    "simple-git": "^3.19.0",
+    "openai": "^4.0.0",
+    "@anthropic-ai/sdk": "^0.9.0",
+    "playwright": "^1.40.0",
+    "conf": "^11.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.2.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

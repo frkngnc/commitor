@@ -1,0 +1,45 @@
+{
+  "name": "commitor",
+  "version": "1.0.0",
+  "description": "AI-powered Git commit message generator CLI",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "commitor": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "cli",
+    "ai",
+    "openai",
+    "anthropic",
+    "conventional-commits"
+  ],
+  "author": "Furkan Genç",
+  "license": "MIT",
+  "dependencies": {
+    "@commitor/core": "*",
+    "commander": "^11.0.0",
+    "inquirer": "^9.0.0",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.0",
+    "simple-git": "^3.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/inquirer": "^9.0.0",
+    "typescript": "^5.2.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
