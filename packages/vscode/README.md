@@ -99,7 +99,7 @@ feat(auth): implement JWT authentication system
 - **API Keys**: Stored securely using VSCode Secrets API (OS keychain)
 - **Privacy**: Git diffs only sent to your chosen AI provider
 - **No Telemetry**: No analytics or tracking
-- **Open Source**: Audit the code at https://github.com/frkngnc/commit
+- **Open Source**: Audit the code at https://github.com/frkngnc/commitor/tree/main/packages/vscode
 
 ## Requirements
 
@@ -135,9 +135,9 @@ Browser automation is experimental and may not work on all systems. We recommend
 
 ## Support
 
-- 🐛 Report issues: https://github.com/frkngnc/commit/issues
-- 📖 Documentation: https://github.com/frkngnc/commit
-- 💬 Discussions: https://github.com/frkngnc/commit/discussions
+- 🐛 Report issues: https://github.com/frkngnc/commitor/issues
+- 📖 Documentation: https://github.com/frkngnc/commitor/tree/main/packages/vscode
+- 💬 Discussions: https://github.com/frkngnc/commitor/discussions
 
 ## CLI Version
 
@@ -147,7 +147,7 @@ Also available as a CLI tool! Install with:
 npm install -g commitor
 ```
 
-See https://github.com/frkngnc/commit for more information.
+See https://github.com/frkngnc/commitor/tree/main/packages/vscode for more information.
 
 ## License
 
@@ -155,4 +155,4 @@ MIT © Furkan Genç
 
 ---
 
-Made with ❤️ by [Furkan Genç](https://github.com/frkngnc)
+Made with by [Furkan Genç](https://github.com/frkngnc)

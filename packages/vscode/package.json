@@ -2,14 +2,14 @@
   "name": "commitor-vscode",
   "displayName": "Commitor",
   "description": "AI-powered Git commit message generator with OpenAI & Anthropic support",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "frkngnc",
   "license": "MIT",
   "icon": "resources/icon.png",
   "main": "dist/extension.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/frkngnc/commit"
+    "url": "https://github.com/frkngnc/commitor/tree/main/packages/vscode"
   },
   "keywords": [
     "git",
