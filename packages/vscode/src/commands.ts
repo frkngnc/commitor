@@ -3,16 +3,22 @@ import { CommitorCore } from '@commitor/core';
 import { SettingsManager } from './settings.js';
 import { StatusBarManager } from './statusBar.js';
 import { ConfigurationPanel } from './webview/configPanel.js';
+import { SourceControlViewProvider } from './sourceControlView.js';
 
 export class CommandManager {
   private settingsManager: SettingsManager;
   private statusBarManager: StatusBarManager;
   private context: vscode.ExtensionContext;
+  private sourceControlView?: SourceControlViewProvider;
 
   constructor(settingsManager: SettingsManager, statusBarManager: StatusBarManager, context: vscode.ExtensionContext) {
     this.settingsManager = settingsManager;
     this.statusBarManager = statusBarManager;
     this.context = context;
+  }
+
+  setSourceControlView(view: SourceControlViewProvider): void {
+    this.sourceControlView = view;
   }
 
   registerCommands(context: vscode.ExtensionContext): void {
@@ -23,8 +29,25 @@ export class CommandManager {
       vscode.commands.registerCommand('commitor.changeLanguage', () => this.changeLanguage()),
       vscode.commands.registerCommand('commitor.logout', () => this.logout()),
       vscode.commands.registerCommand('commitor.checkHealth', () => this.checkHealth()),
-      vscode.commands.registerCommand('commitor.updateStatusBar', () => this.statusBarManager.update())
+      vscode.commands.registerCommand('commitor.updateStatusBar', () => this.statusBarManager.update()),
+      vscode.commands.registerCommand('commitor.sourceControl.refresh', () => this.refreshSourceControlView()),
+      vscode.commands.registerCommand('commitor.sourceControl.changeProvider', () => this.changeProviderFromPanel()),
+      vscode.commands.registerCommand('commitor.sourceControl.changeLanguage', () => this.changeLanguageFromPanel())
     );
+  }
+
+  private refreshSourceControlView(): void {
+    this.sourceControlView?.refresh();
+  }
+
+  private async changeProviderFromPanel(): Promise<void> {
+    await this.configure();
+    this.sourceControlView?.refresh();
+  }
+
+  private async changeLanguageFromPanel(): Promise<void> {
+    await this.changeLanguage();
+    this.sourceControlView?.refresh();
   }
 
   private openConfigPanel(): void {

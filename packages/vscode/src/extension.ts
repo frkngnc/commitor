@@ -2,15 +2,26 @@ import * as vscode from 'vscode';
 import { SettingsManager } from './settings.js';
 import { StatusBarManager } from './statusBar.js';
 import { CommandManager } from './commands.js';
+import { SourceControlViewProvider } from './sourceControlView.js';
 
 let settingsManager: SettingsManager;
 let statusBarManager: StatusBarManager;
 let commandManager: CommandManager;
+let sourceControlView: SourceControlViewProvider;
 
 export async function activate(context: vscode.ExtensionContext) {
   settingsManager = new SettingsManager(context);
   statusBarManager = new StatusBarManager(settingsManager);
   commandManager = new CommandManager(settingsManager, statusBarManager, context);
+
+  // Register Source Control view
+  sourceControlView = new SourceControlViewProvider(settingsManager);
+  context.subscriptions.push(
+    vscode.window.registerTreeDataProvider('commitor.sourceControl', sourceControlView)
+  );
+
+  // Connect view to command manager for refresh functionality
+  commandManager.setSourceControlView(sourceControlView);
 
   commandManager.registerCommands(context);
   await statusBarManager.update();
@@ -19,6 +30,7 @@ export async function activate(context: vscode.ExtensionContext) {
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('commitor')) {
         statusBarManager.update();
+        sourceControlView.refresh();
       }
     })
   );

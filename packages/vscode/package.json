@@ -2,7 +2,7 @@
   "name": "commitor-vscode",
   "displayName": "Commitor",
   "description": "AI-powered Git commit message generator with OpenAI & Anthropic support",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "publisher": "frkngnc",
   "license": "MIT",
   "icon": "resources/icon.png",
@@ -14,12 +14,32 @@
   "keywords": [
     "git",
     "commit",
+    "cli",
     "ai",
+    "artificial-intelligence",
+    "commit-message",
+    "commit-message-generator",
+    "git-commit",
+    "git-cli",
     "openai",
+    "chatgpt",
+    "gpt-4o",
+    "gpt-5",
     "anthropic",
     "claude",
-    "chatgpt",
-    "conventional-commits"
+    "conventional-commits",
+    "commitizen",
+    "git-automation",
+    "developer-tools",
+    "devtools",
+    "productivity",
+    "code-quality",
+    "best-practices",
+    "semantic-commit",
+    "commit-helper",
+    "ai-assistant",
+    "terminal",
+    "command-line"
   ],
   "categories": [
     "SCM Providers",
@@ -64,6 +84,39 @@
         "command": "commitor.checkHealth",
         "title": "Check Provider Health",
         "category": "Commitor"
+      },
+      {
+        "command": "commitor.sourceControl.refresh",
+        "title": "Refresh",
+        "category": "Commitor",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "commitor.sourceControl.changeProvider",
+        "title": "Change AI Provider",
+        "category": "Commitor",
+        "icon": "$(settings)"
+      },
+      {
+        "command": "commitor.sourceControl.changeLanguage",
+        "title": "Change Language",
+        "category": "Commitor",
+        "icon": "$(globe)"
+      }
+    ],
+    "views": {
+      "scm": [
+        {
+          "id": "commitor.sourceControl",
+          "name": "Commitor",
+          "when": "scmProvider == git"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "commitor.sourceControl",
+        "contents": "Stage files to generate AI commit message.\n[⚙️ Configure](command:commitor.configure)"
       }
     ],
     "menus": {
@@ -74,10 +127,41 @@
           "when": "scmProvider == git"
         }
       ],
+      "view/title": [
+        {
+          "command": "commitor.sourceControl.refresh",
+          "when": "view == commitor.sourceControl",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "commitor.sourceControl.changeProvider",
+          "when": "view == commitor.sourceControl && viewItem == provider",
+          "group": "inline"
+        },
+        {
+          "command": "commitor.sourceControl.changeLanguage",
+          "when": "view == commitor.sourceControl && viewItem == language",
+          "group": "inline"
+        }
+      ],
       "commandPalette": [
         {
           "command": "commitor.generateCommitMessage",
           "when": "scmProvider == git"
+        },
+        {
+          "command": "commitor.sourceControl.refresh",
+          "when": "false"
+        },
+        {
+          "command": "commitor.sourceControl.changeProvider",
+          "when": "false"
+        },
+        {
+          "command": "commitor.sourceControl.changeLanguage",
+          "when": "false"
         }
       ]
     },
