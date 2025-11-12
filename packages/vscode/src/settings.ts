@@ -3,6 +3,7 @@ import { CommitorConfig, AIProvider, ConnectionType, LanguagePreference } from '
 
 export class SettingsManager {
   private static readonly SECTION = 'commitor';
+  private static readonly DATA_CONSENT_KEY = 'commitor.dataConsent.v1';
   private context: vscode.ExtensionContext;
 
   constructor(context: vscode.ExtensionContext) {
@@ -66,6 +67,33 @@ export class SettingsManager {
   shouldShowStatusBar(): boolean {
     const config = vscode.workspace.getConfiguration(SettingsManager.SECTION);
     return config.get<boolean>('showStatusBar', true);
+  }
+
+  getExcludeGlobs(): string[] {
+    const config = vscode.workspace.getConfiguration(SettingsManager.SECTION);
+    return config.get<string[]>('excludeGlobs', []) ?? [];
+  }
+
+  shouldWarnOnBinaryDiffs(): boolean {
+    const config = vscode.workspace.getConfiguration(SettingsManager.SECTION);
+    return config.get<boolean>('warnOnBinaryDiffs', true);
+  }
+
+  getLargeDiffWarningThreshold(): number {
+    const config = vscode.workspace.getConfiguration(SettingsManager.SECTION);
+    return Math.max(0, config.get<number>('largeDiffWarningThreshold', 2000) ?? 2000);
+  }
+
+  hasAcceptedDataConsent(): boolean {
+    return this.context.workspaceState.get<boolean>(SettingsManager.DATA_CONSENT_KEY, false);
+  }
+
+  async setDataConsentAccepted(value: boolean): Promise<void> {
+    await this.context.workspaceState.update(SettingsManager.DATA_CONSENT_KEY, value);
+  }
+
+  async resetDataConsent(): Promise<void> {
+    await this.context.workspaceState.update(SettingsManager.DATA_CONSENT_KEY, false);
   }
 
   async updateSetting(key: string, value: any, global: boolean = false): Promise<void> {

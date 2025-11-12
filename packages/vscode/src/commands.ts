@@ -1,18 +1,25 @@
 import * as vscode from 'vscode';
-import { CommitorCore } from '@commitor/core';
+import { minimatch } from 'minimatch';
+import { CommitorCore, type GitDiff, type FileChange, type DiffStats } from '@commitor/core';
 import { SettingsManager } from './settings.js';
 import { StatusBarManager } from './statusBar.js';
 import { ConfigurationPanel } from './webview/configPanel.js';
+import { SourceControlViewProvider } from './sourceControlView.js';
 
 export class CommandManager {
   private settingsManager: SettingsManager;
   private statusBarManager: StatusBarManager;
   private context: vscode.ExtensionContext;
+  private sourceControlView?: SourceControlViewProvider;
 
   constructor(settingsManager: SettingsManager, statusBarManager: StatusBarManager, context: vscode.ExtensionContext) {
     this.settingsManager = settingsManager;
     this.statusBarManager = statusBarManager;
     this.context = context;
+  }
+
+  setSourceControlView(view: SourceControlViewProvider): void {
+    this.sourceControlView = view;
   }
 
   registerCommands(context: vscode.ExtensionContext): void {
@@ -23,8 +30,25 @@ export class CommandManager {
       vscode.commands.registerCommand('commitor.changeLanguage', () => this.changeLanguage()),
       vscode.commands.registerCommand('commitor.logout', () => this.logout()),
       vscode.commands.registerCommand('commitor.checkHealth', () => this.checkHealth()),
-      vscode.commands.registerCommand('commitor.updateStatusBar', () => this.statusBarManager.update())
+      vscode.commands.registerCommand('commitor.updateStatusBar', () => this.statusBarManager.update()),
+      vscode.commands.registerCommand('commitor.sourceControl.refresh', () => this.refreshSourceControlView()),
+      vscode.commands.registerCommand('commitor.sourceControl.changeProvider', () => this.changeProviderFromPanel()),
+      vscode.commands.registerCommand('commitor.sourceControl.changeLanguage', () => this.changeLanguageFromPanel())
     );
+  }
+
+  private refreshSourceControlView(): void {
+    this.sourceControlView?.refresh();
+  }
+
+  private async changeProviderFromPanel(): Promise<void> {
+    await this.configure();
+    this.sourceControlView?.refresh();
+  }
+
+  private async changeLanguageFromPanel(): Promise<void> {
+    await this.changeLanguage();
+    this.sourceControlView?.refresh();
   }
 
   private openConfigPanel(): void {
@@ -33,6 +57,11 @@ export class CommandManager {
 
   private async generateCommitMessage(): Promise<void> {
     try {
+      if (!vscode.workspace.isTrusted) {
+        vscode.window.showWarningMessage('Commitor is disabled in untrusted workspaces. Trust this workspace to continue.');
+        return;
+      }
+
       const repository = await this.getRepository();
       if (!repository) {
         vscode.window.showWarningMessage('Commitor: No Git repository found in this workspace.');
@@ -53,6 +82,7 @@ export class CommandManager {
       this.statusBarManager.setLoading();
 
       const config = await this.settingsManager.buildConfig();
+      const language = this.resolveLanguage();
 
       if (config.connectionType === 'api' && !config.apiKey) {
         const action = await vscode.window.showErrorMessage(
@@ -66,6 +96,9 @@ export class CommandManager {
         return;
       }
 
+      let cancelledByUser = false;
+      let excludedSummary: string | undefined;
+
       await vscode.window.withProgress(
         {
           location: vscode.ProgressLocation.Notification,
@@ -74,8 +107,24 @@ export class CommandManager {
         },
         async () => {
           const commitor = new CommitorCore(config);
-          const diff = await commitor.analyzeGitDiff(repository.rootUri.fsPath);
-          const language = this.resolveLanguage();
+          let diff = await commitor.analyzeGitDiff(repository.rootUri.fsPath);
+
+          const filterResult = this.applyFileExclusions(diff);
+          diff = filterResult.filteredDiff;
+          excludedSummary = this.buildExcludedSummary(filterResult.excluded);
+
+          if (diff.files.length === 0) {
+            vscode.window.showWarningMessage('All staged files are excluded by Commitor settings. Update commitor.excludeGlobs to include at least one file.');
+            cancelledByUser = true;
+            return;
+          }
+
+          const consentGranted = await this.ensureDataSharingConsent(diff, config.provider);
+          if (!consentGranted) {
+            cancelledByUser = true;
+            return;
+          }
+
           const message = await commitor.generateCommitMessage(diff, language);
           repository.inputBox.value = message.raw;
 
@@ -83,6 +132,15 @@ export class CommandManager {
           vscode.window.showInformationMessage('Commit message generated successfully!');
         }
       );
+
+      if (cancelledByUser) {
+        this.statusBarManager.update();
+        return;
+      }
+
+      if (excludedSummary) {
+        vscode.window.showInformationMessage(excludedSummary);
+      }
     } catch (error: any) {
       this.statusBarManager.setError(error.message);
       vscode.window.showErrorMessage(`Commitor error: ${error.message ?? error}`);
@@ -260,5 +318,117 @@ export class CommandManager {
     }
 
     return settings.language === 'tr' ? 'Turkish' : 'English';
+  }
+
+  private applyFileExclusions(diff: GitDiff): { filteredDiff: GitDiff; excluded: FileChange[] } {
+    const patterns = this.settingsManager.getExcludeGlobs().map(pattern => pattern.trim()).filter(Boolean);
+    if (patterns.length === 0) {
+      return { filteredDiff: diff, excluded: [] };
+    }
+
+    const excluded: FileChange[] = [];
+    const included: FileChange[] = [];
+
+    for (const file of diff.files) {
+      const shouldExclude = patterns.some(pattern =>
+        minimatch(file.path, pattern, { dot: true, matchBase: true })
+      );
+      if (shouldExclude) {
+        excluded.push(file);
+      } else {
+        included.push(file);
+      }
+    }
+
+    const stats = this.calculateStats(included);
+
+    return {
+      filteredDiff: {
+        ...diff,
+        files: included,
+        stats
+      },
+      excluded
+    };
+  }
+
+  private calculateStats(files: FileChange[]): DiffStats {
+    return {
+      totalFiles: files.length,
+      totalAdditions: files.reduce((sum, file) => sum + file.additions, 0),
+      totalDeletions: files.reduce((sum, file) => sum + file.deletions, 0)
+    };
+  }
+
+  private buildExcludedSummary(excluded: FileChange[]): string | undefined {
+    if (excluded.length === 0) {
+      return undefined;
+    }
+
+    const preview = excluded.slice(0, 3).map(file => file.path);
+    const more = excluded.length > 3 ? `, +${excluded.length - 3} more` : '';
+    return `Commitor skipped ${excluded.length} file(s) based on commitor.excludeGlobs: ${preview.join(', ')}${more}`;
+  }
+
+  private async ensureDataSharingConsent(diff: GitDiff, provider: string): Promise<boolean> {
+    const consentGiven = this.settingsManager.hasAcceptedDataConsent();
+    const largeDiffThreshold = this.settingsManager.getLargeDiffWarningThreshold();
+    const totalChanges = diff.stats.totalAdditions + diff.stats.totalDeletions;
+    const isLargeDiff = largeDiffThreshold > 0 && totalChanges >= largeDiffThreshold;
+
+    const warnOnBinary = this.settingsManager.shouldWarnOnBinaryDiffs();
+    const binaryFiles = warnOnBinary
+      ? diff.files.filter(file => this.isBinaryDiff(file.diff))
+      : [];
+    const hasBinary = binaryFiles.length > 0;
+
+    if (consentGiven && !isLargeDiff && !hasBinary) {
+      return true;
+    }
+
+    const providerLabel = provider === 'anthropic' ? 'Anthropic (Claude)' : 'OpenAI (ChatGPT)';
+    const detailParts = [
+      `Provider: ${providerLabel}`,
+      `Files: ${diff.stats.totalFiles}`,
+      `Additions: ${diff.stats.totalAdditions}`,
+      `Deletions: ${diff.stats.totalDeletions}`
+    ];
+
+    if (hasBinary) {
+      const names = binaryFiles.slice(0, 5).map(file => file.path);
+      const suffix = binaryFiles.length > 5 ? '\n- ...' : '';
+      detailParts.push(`Binary files:\n- ${names.join('\n- ')}${suffix}`);
+    }
+
+    if (isLargeDiff) {
+      detailParts.push(`Large diff warning threshold: ${largeDiffThreshold} lines`);
+    }
+
+    const detail = detailParts.join('\n');
+    const baseMessage = 'Commitor will send your staged changes to the AI provider. Continue?';
+    const sendOnceLabel = consentGiven ? 'Send anyway' : 'Send once';
+    const rememberLabel = consentGiven ? undefined : 'Send & remember choice';
+
+    const buttons = rememberLabel ? [sendOnceLabel, rememberLabel] : [sendOnceLabel];
+    const selection = await vscode.window.showWarningMessage(baseMessage, { modal: true, detail }, ...buttons);
+
+    if (!selection) {
+      return false;
+    }
+
+    if (rememberLabel && selection === rememberLabel) {
+      await this.settingsManager.setDataConsentAccepted(true);
+    }
+
+    return true;
+  }
+
+  private isBinaryDiff(diffText: string): boolean {
+    if (!diffText) {
+      return false;
+    }
+    return diffText.includes('GIT binary patch') ||
+      diffText.includes('Binary files') ||
+      /\u0000/.test(diffText);
   }
 }
